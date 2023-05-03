@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>知识问答</title>
+</head>
+<body>
+  <h1>知识问答</h1>
+  <p>今日剩余机会：{{ remaining_chance }}</p>
+  <form action="{% url 'quiz' %}" method="post">
+    {% csrf_token %}
+    {% for question in questions %}
+      <p>{{ question.text }}</p>
+      <input type="radio" name="{{ question.id }}" value="A">{{ question.option_a }}<br>
+      <input type="radio" name="{{ question.id }}" value="B">{{ question.option_b }}<br>
+      <input type="radio" name="{{ question.id }}" value="C">{{ question.option_c }}<br>
+      <input type="radio" name="{{ question.id }}" value="D">{{ question.option_d }}<br>
+    {% endfor %}
+    <br>
+    <button type="submit">提交</button>
+  </form>
+</body>
+</html>

@@ -34,6 +34,10 @@ INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
     'redMap.apps.RedmapConfig',
     'loveRelay.apps.LoverelayConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -126,3 +132,28 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'redMap.RedMapUser'
+
+# django-allauth basic configuration
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # 可以使用用户名或邮箱登录
+ACCOUNT_EMAIL_REQUIRED = True  # 必须设置电子邮箱
+LOGIN_REDIRECT_URL = '/accounts/profile/'  # 登录成功后的跳转地址
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+ 
+# 发送邮件配置项
+# smpt服务器地址
+EMAIL_HOST = 'smtp.qq.com'
+# 端口
+EMAIL_PORT = 25
+# 发送邮件的邮箱
+EMAIL_HOST_USER = '393810965@qq.com'
+# 在邮箱中设置的客户端授权密码
+EMAIL_HOST_PASSWORD = 'scduvrzlrionbgbb'
+# 收件人看到的发件人
+EMAIL_FROM = 'mayuke<393810965@qq.com>'
+# 报错此项必须加上
+DEFAULT_FROM_EMAIL = '393810965@qq.com'
+
+DEFAULT_CHARSET = 'utf-8'

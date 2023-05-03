@@ -24,4 +24,5 @@ urlpatterns = [
     path('map/', include("redMap.urls")),
     path('bottle/', include("loveRelay.urls")),
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls'))
 ]
