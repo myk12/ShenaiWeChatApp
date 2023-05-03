@@ -8,9 +8,22 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('file_path', type=str, help='Path of the Excel file')
+        parser.add_argument('question_type', type=int, help='The kind of question: \
+                                                             1: basic computer knowledge \
+                                                             2: basic CPC history knowledge \
+                                                             3: basic blood donation knowledge')
 
     def handle(self, *args, **kwargs):
         file_path = kwargs['file_path']
+        question_kind = kwargs['question_type']
+        category = ''
+        if question_kind == 1:
+            category = 'computer'
+        elif question_kind == 2:
+            category = 'blood'
+        else:
+            category = 'party'
+
         df = pd.read_excel(file_path)
         print(df)
         for index, row in df.iterrows():
@@ -24,6 +37,7 @@ class Command(BaseCommand):
             answer = row['答案']
             Question.objects.create(
                 text=question,
+                category = category,
                 option_a=option_a,
                 option_b=option_b,
                 option_c=option_c,

@@ -22,7 +22,7 @@ urlpatterns = [
     #path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('quiz/', include("quiz.urls")),
     path('map/', include("redMap.urls")),
-    path('bottle/', include("loveRelay.urls")),
+    path('love/', include("loveRelay.urls")),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls'))
 ]

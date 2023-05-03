@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Gift List</h1>
+  <ul>
+  {% for gift in gift_list %}
+    <li><a href="{% url 'gift_detail' gift.pk %}">{{ gift.name }}</a></li>
+  {% endfor %}
+  </ul>
+{% endblock %}

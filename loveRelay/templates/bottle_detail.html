@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ bottle.content }}</h1>
+  <p>Author: {{ bottle.author }}</p>
+  <p>Gift: {{ bottle.gift.name }}</p>
+  <p>Message: {{ bottle.message.content }}</p>
+{% endblock %}

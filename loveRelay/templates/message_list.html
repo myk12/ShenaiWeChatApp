@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Message List</h1>
+  <ul>
+  {% for message in message_list %}
+    <li><a href="{% url 'message_detail' message.pk %}">{{ message.content }}</a></li>
+  {% endfor %}
+  </ul>
+{% endblock %}
