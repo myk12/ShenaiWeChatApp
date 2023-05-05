@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-xwh(3is+o38035z-07fg-44xy&02f0)cv14hk33pj1zs3zx!6w
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ["https://django-hztl-44208-8-1317860513.sh.run.tcloudbase.com"]
+
 
 
 # Application definition
