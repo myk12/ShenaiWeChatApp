@@ -18,32 +18,34 @@ class QuizView(View):
 
     @method_decorator(login_required)
     def post(self, request):
-        # 获取答案列表
-        score = 0
-        cnt = 0
-        for id, ans in request.POST.items():
-            if cnt == 0:
-                continue
-            print(ans)
-            print(Question.objects.get(pk=int(id)).answer)
-            if ans == Question.objects.get(pk=id).answer:
-                score += 5
-            cnt += 1
+        post_conent = request.POST
+        print(post_conent)
+        score = post_conent.get('score')
+
+        # 计算得分
+        blood_bags = 0
+        if 0 <= score and score < 10:
+            blood_bags = score*5
+        elif score == 10:
+            blood_bags = score*5 + 10
+        else:
+            blood_bags = 0
         
         print(score)
-        # 更新个人记录和个人信息
-        record = Record(user=request.user, score=score)
-        record.save()
-        #profile = Profile.objects.get(user=request.user)
-        #if not profile:
-            #profile = Profile(user=request.user, blood_bags=score, last_quiz_date=datetime.now())
-        #else:
-            #profile.blood_bags += score
-            #profile.last_quiz_date = datetime.now()
-        #profile.save()
-        # 返回得分和已获得电子小血包
-        return JsonResponse({'score': score, 'total_score': score})
 
+        # 更新个人记录和个人信息
+        record = Record(user=request.user, score=score, date=datetime.now())
+        record.save()
+
+        profile = Profile.objects.get(user=request.user)
+        if not profile:
+            profile = Profile(user=request.user, blood_bags=score, last_quiz_date=datetime.now())
+        else:
+            profile.blood_bags += score
+            profile.last_quiz_date = datetime.now()
+        profile.save()
+        # 返回得分和已获得电子小血包
+        return JsonResponse({'error_code': 0})
 
 class RankView(View):
     @method_decorator(login_required)
@@ -56,7 +58,6 @@ class RankView(View):
             'rank': i + 1,
         } for i, profile in enumerate(profiles)]
         return JsonResponse({'rankings': data})
-
 
 class ProfileView(View):
     @method_decorator(login_required)

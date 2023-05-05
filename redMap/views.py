@@ -10,30 +10,69 @@ from .models import BloodDonor, BloodRecord, BloodPhoto, BloodMessage
 def index(request):
     return HttpResponse('index')
 
-@login_required
-def map(request):
-    donors = BloodDonor.objects.all()
-    return render(request, 'map.html', {'donors': donors})
+class ProfileView(View):
+    @login_required
+    def get(self, request):
+        user = request.user
+        user_profile = BloodDonor.objects.filter(user=user)
+        rspJson = {}
+        rspJson['hometown'] = user_profile.hometown
+        rspJson['province'] = user_profile.province
+        rspJson['city'] = user_profile.city
+        rspJson['latitude'] = user_profile.latitude
+        rspJson['longitude'] = user_profile.longitude
+
+        return JsonResponse(rspJson)
+    
+    @login_required
+    def post(self, request):
+        user = request.user
+        rspJson = {}
+        post_content = request.POST
+        user_profile = BloodDonor.objects.filter(user=user)
+        user_profile.hometown = post_content.get('hometown')
+        user_profile.province = post_content.get('province')
+        user_profile.city = post_content.get('city')
+        user_profile.latitude = post_content.get('latitude')
+        user_profile.longitude = post_content.get('longitude')
+
+        user_profile.save()
+        rspJson['error_code'] = 0
+        return JsonResponse(rspJson)
+
+class DonationView(View):
+    @login_required
+    def get(self, request):
+        user = request.user.user
+        rspJson = {}
+        records = BloodRecord.objects.filter(donor=user)
+
+        record_list = []
+        for record in records:
+            rcd_json = {}
+            rcd_json['datetime'] = record.datetime
+            rcd_json['volume'] = record.volume
+            record_list.append(rcd_json)
+
+        rspJson['records'] = record_list
+        return JsonResponse(rspJson)
+    
+    @login_required
+    def post(self, request):
+        user = request.user
+        user_post = request.POST
+        rspJson = {}
+
+        BloodRecord.objects.create(
+            donor = user,
+            datetime = user_post.get('datetime'),
+            volume = user_post.get('volume')
+        )
+
+        rspJson['error_code'] = 0
+        return JsonResponse(rspJson)
 
 @login_required
-def profile(request):
-    return HttpResponse("Test login success")
-    #donor = request.user.donor
-    #records = donor.records.all()
-    #photos = donor.photos.all()
-    #messages = donor.messages.all()
-    #return render(request, 'profile.html', {'donor': donor, 'records': records, 'photos': photos, 'messages': messages})
-
-#@login_required
-def add_record(request):
-    if request.method == 'POST':
-        volume = request.POST['volume']
-        BloodRecord.objects.create(donor=request.user.donor, volume=volume)
-        return JsonResponse({'success': True})
-    else:
-        return JsonResponse({'success': False})
-
-#@login_required
 def upload_photo(request):
     if request.method == 'POST':
         photo = request.FILES['photo']
@@ -42,52 +81,3 @@ def upload_photo(request):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False})
-
-class RegisterView(View):
-    def get(self, request):
-        return render(request, "redMap/register.html")
-    
-    def post(self, request):
-        rname = request.POST.get("rname")
-        rpasswd = request.POST.get("rpasswd")
-        email = request.POST.get("email")
-
-        # if successfully registered, redirect to login page
-        users = RedMapUser.objects.all()
-        
-        res_user = RedMapUser.objects.filter(username=rname).count()
-
-        if res_user != 0:
-            HttpResponse("user exists.")
-        
-        
-        try:
-            user = RedMapUser.objects.create_user(username=rname, password=rpasswd, email=email)
-            print('>>>', user)
-        except Exception as e:
-            print(e)
-            return HttpResponse("Failed to register.")
-        
-        return redirect('login/')
-
-class LoginView(View):
-    def get(self, request):
-        return render(request, "redMap/login.html")
-    
-    def post(self, request):
-        lname = request.POST.get("lname")
-        lpasswd = request.POST.get("lpasswd")
-        print(lname, lpasswd)
-
-        user = authenticate(request, username=lname, password=lpasswd)
-        print(user)
-
-        if user is not None:
-            login(request, user)
-
-            return HttpResponse("login success!")
-        
-        else:
-
-            return HttpResponse("login failed.")
-        

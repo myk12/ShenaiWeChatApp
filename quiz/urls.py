@@ -5,7 +5,7 @@ app_name = 'quiz'
 
 urlpatterns = [
     # 知识问答接口
-    path('', views.QuizView.as_view(), name='quiz'),
+    path('question/', views.QuizView.as_view(), name='quiz'),
     # 排行榜接口
     path('rank/', views.RankView.as_view(), name='rank'),
     # 个人中心接口
