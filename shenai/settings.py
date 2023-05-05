@@ -31,19 +31,22 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'quiz.apps.QuizConfig',
-    'redMap.apps.RedmapConfig',
-    'loveRelay.apps.LoverelayConfig',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.github',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    # allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.weixin',
+    # applications
+    'quiz.apps.QuizConfig',
+    'redMap.apps.RedmapConfig',
+    'loveRelay.apps.LoverelayConfig',
 ]
 
 SITE_ID = 1
@@ -71,6 +74,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # allauth needs this from django
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -136,9 +141,13 @@ AUTH_USER_MODEL = 'redMap.RedMapUser'
 # django-allauth basic configuration
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # 可以使用用户名或邮箱登录
 ACCOUNT_EMAIL_REQUIRED = True  # 必须设置电子邮箱
-LOGIN_REDIRECT_URL = '/accounts/profile/'  # 登录成功后的跳转地址
+LOGIN_REDIRECT_URL = '/map'  # 登录成功后的跳转地址
+
 AUTHENTICATION_BACKENDS = (
+    #Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 )
  
